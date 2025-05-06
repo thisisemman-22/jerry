@@ -31,10 +31,10 @@ def process_image(image_file, process_type, **kwargs):
     else:
         raise ValueError(f"Unsupported process type: {process_type}")
 
-    # Save the processed image to a file and return the file path
-    output_path = f"processed_{process_type}.png"
+    # Save the processed image to the public folder and return the file path
+    output_path = f"public/processed_{process_type}.png"
     processed_image.save(output_path, format="PNG")
-    return output_path
+    return output_path.replace("public/", "")  # Return relative path for URL generation
 
 # ---------------------------------------------------------
 # Downscaling Function (Newton's Divided Difference Interpolation)
