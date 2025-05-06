@@ -20,7 +20,8 @@ def downscale_route():
     try:
         image_file = request.files['image']
         output_path = process_image(image_file, 'downscale')
-        return jsonify({"output_path": output_path})
+        output_url = request.host_url + output_path  # Convert path to URL
+        return jsonify({"output_url": output_url})
     except Exception as e:
         return jsonify({"error": "Processing failed", "message": str(e)}), 500
 
@@ -31,7 +32,8 @@ def upscale_route():
     try:
         image_file = request.files['image']
         output_path = process_image(image_file, 'upscale')
-        return jsonify({"output_path": output_path})
+        output_url = request.host_url + output_path  # Convert path to URL
+        return jsonify({"output_url": output_url})
     except Exception as e:
         return jsonify({"error": "Processing failed", "message": str(e)}), 500
 
@@ -42,7 +44,8 @@ def denoise_route():
     try:
         image_file = request.files['image']
         output_path = process_image(image_file, 'denoise')
-        return jsonify({"output_path": output_path})
+        output_url = request.host_url + output_path  # Convert path to URL
+        return jsonify({"output_url": output_url})
     except Exception as e:
         return jsonify({"error": "Processing failed", "message": str(e)}), 500
 
@@ -56,7 +59,8 @@ def blur_route():
         image_file = request.files['image']
         radius = int(request.form['radius'])  # Get radius from form data
         output_path = process_image(image_file, 'blur', radius=radius)
-        return jsonify({"output_path": output_path})
+        output_url = request.host_url + output_path  # Convert path to URL
+        return jsonify({"output_url": output_url})
     except ValueError:
         return jsonify({"error": "Invalid radius value."}), 400
     except Exception as e:
