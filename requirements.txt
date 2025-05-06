@@ -1,3 +1,6 @@
 Flask
 Werkzeug
 Pillow
+numpy
+math
+io
