@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from image_processing import process_image
 from werkzeug.exceptions import BadRequest
 import os
@@ -65,6 +65,11 @@ def blur_route():
         return jsonify({"error": "Invalid radius value."}), 400
     except Exception as e:
         return jsonify({"error": "Processing failed", "message": str(e)}), 500
+
+# Serve static files from the 'public' directory
+@app.route('/<path:filename>', methods=['GET'])
+def serve_static_file(filename):
+    return send_from_directory('public', filename)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
