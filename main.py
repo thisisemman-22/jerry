@@ -1,0 +1,65 @@
+from flask import Flask, request, jsonify
+from image_processing import process_image
+from werkzeug.exceptions import BadRequest
+
+app = Flask(__name__)
+
+@app.errorhandler(BadRequest)
+def handle_bad_request(e):
+    return jsonify({"error": "Bad Request", "message": str(e)}), 400
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
+
+@app.route('/downscale', methods=['POST'])
+def downscale_route():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image file provided."}), 400
+    try:
+        image_file = request.files['image']
+        output_path = process_image(image_file, 'downscale')
+        return jsonify({"output_path": output_path})
+    except Exception as e:
+        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+
+@app.route('/upscale', methods=['POST'])
+def upscale_route():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image file provided."}), 400
+    try:
+        image_file = request.files['image']
+        output_path = process_image(image_file, 'upscale')
+        return jsonify({"output_path": output_path})
+    except Exception as e:
+        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+
+@app.route('/denoise', methods=['POST'])
+def denoise_route():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image file provided."}), 400
+    try:
+        image_file = request.files['image']
+        output_path = process_image(image_file, 'denoise')
+        return jsonify({"output_path": output_path})
+    except Exception as e:
+        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+
+@app.route('/blur', methods=['POST'])
+def blur_route():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image file provided."}), 400
+    if 'radius' not in request.form:
+        return jsonify({"error": "No radius value provided."}), 400
+    try:
+        image_file = request.files['image']
+        radius = int(request.form['radius'])  # Get radius from form data
+        output_path = process_image(image_file, 'blur', radius=radius)
+        return jsonify({"output_path": output_path})
+    except ValueError:
+        return jsonify({"error": "Invalid radius value."}), 400
+    except Exception as e:
+        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
