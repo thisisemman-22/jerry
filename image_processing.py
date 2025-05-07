@@ -2,8 +2,6 @@ from PIL import Image, ImageFilter
 import numpy as np
 import math
 from io import BytesIO
-import os
-import uuid
 
 def process_image(image_file, process_type, **kwargs):
     """
@@ -33,14 +31,8 @@ def process_image(image_file, process_type, **kwargs):
     else:
         raise ValueError(f"Unsupported process type: {process_type}")
 
-    # Ensure the 'public' directory exists
-    os.makedirs('public', exist_ok=True)
-
-    # Generate a unique filename to avoid overwriting existing files
-    unique_id = uuid.uuid4().hex[:8]  # Generate an 8-character unique ID
-    output_path = f"public/processed_{process_type}_{unique_id}.png"
-
     # Save the processed image to the public folder and return the file path
+    output_path = f"public/processed_{process_type}.png"
     processed_image.save(output_path, format="PNG")
     return output_path.replace("public/", "")  # Return relative path for URL generation
 

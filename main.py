@@ -16,45 +16,45 @@ def handle_exception(e):
 @app.route('/downscale', methods=['POST'])
 def downscale_route():
     if 'image' not in request.files:
-        return jsonify({"error": "No image file provided."}), 400
+        return jsonify({"error": "No Image File", "message": "No image file provided."}), 400
     try:
         image_file = request.files['image']
         output_path = process_image(image_file, 'downscale')
         output_url = request.host_url + output_path  # Convert path to URL
         return jsonify({"output_url": output_url})
     except Exception as e:
-        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+        return jsonify({"error": "Processing Failed", "message": str(e)}), 500
 
 @app.route('/upscale', methods=['POST'])
 def upscale_route():
     if 'image' not in request.files:
-        return jsonify({"error": "No image file provided."}), 400
+        return jsonify({"error": "No Image File", "message": "No image file provided."}), 400
     try:
         image_file = request.files['image']
         output_path = process_image(image_file, 'upscale')
         output_url = request.host_url + output_path  # Convert path to URL
         return jsonify({"output_url": output_url})
     except Exception as e:
-        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+        return jsonify({"error": "Processing Failed", "message": str(e)}), 500
 
 @app.route('/denoise', methods=['POST'])
 def denoise_route():
     if 'image' not in request.files:
-        return jsonify({"error": "No image file provided."}), 400
+        return jsonify({"error": "No Image File", "message": "No image file provided."}), 400
     try:
         image_file = request.files['image']
         output_path = process_image(image_file, 'denoise')
         output_url = request.host_url + output_path  # Convert path to URL
         return jsonify({"output_url": output_url})
     except Exception as e:
-        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+        return jsonify({"error": "Processing Failed", "message": str(e)}), 500
 
 @app.route('/blur', methods=['POST'])
 def blur_route():
     if 'image' not in request.files:
-        return jsonify({"error": "No image file provided."}), 400
+        return jsonify({"error": "No Image File", "message": "No image file provided."}), 400
     if 'radius' not in request.form:
-        return jsonify({"error": "No radius value provided."}), 400
+        return jsonify({"error": "No Radius Value", "message": "No radius value provided."}), 400
     try:
         image_file = request.files['image']
         radius = int(request.form['radius'])  # Get radius from form data
@@ -62,9 +62,9 @@ def blur_route():
         output_url = request.host_url + output_path  # Convert path to URL
         return jsonify({"output_url": output_url})
     except ValueError:
-        return jsonify({"error": "Invalid radius value."}), 400
+        return jsonify({"error": "Invalid Radius Value", "message": "Invalid radius value."}), 400
     except Exception as e:
-        return jsonify({"error": "Processing failed", "message": str(e)}), 500
+        return jsonify({"error": "Processing Failed", "message": str(e)}), 500
 
 # Serve static files from the 'public' directory
 @app.route('/<path:filename>', methods=['GET'])
