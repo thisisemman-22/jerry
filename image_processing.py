@@ -2,6 +2,7 @@ from PIL import Image, ImageFilter
 import numpy as np
 import math
 from io import BytesIO
+import os
 
 def process_image(image_file, process_type, **kwargs):
     """
@@ -30,6 +31,9 @@ def process_image(image_file, process_type, **kwargs):
         processed_image = blur(image, radius=radius)
     else:
         raise ValueError(f"Unsupported process type: {process_type}")
+
+    # Ensure the 'public' directory exists
+    os.makedirs('public', exist_ok=True)
 
     # Save the processed image to the public folder and return the file path
     output_path = f"public/processed_{process_type}.png"
