@@ -20,12 +20,6 @@ class FFAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _uploadedImageAppState = '';
-  String get uploadedImageAppState => _uploadedImageAppState;
-  set uploadedImageAppState(String value) {
-    _uploadedImageAppState = value;
-  }
-
   String _loadingText = '';
   String get loadingText => _loadingText;
   set loadingText(String value) {
@@ -54,5 +48,23 @@ class FFAppState extends ChangeNotifier {
   String get imageURL => _imageURL;
   set imageURL(String value) {
     _imageURL = value;
+  }
+
+  String _uploadedImageByUser = '';
+  String get uploadedImageByUser => _uploadedImageByUser;
+  set uploadedImageByUser(String value) {
+    _uploadedImageByUser = value;
+  }
+
+  bool _processStart = false;
+  bool get processStart => _processStart;
+  set processStart(bool value) {
+    _processStart = value;
+  }
+
+  bool _APIDone = false;
+  bool get APIDone => _APIDone;
+  set APIDone(bool value) {
+    _APIDone = value;
   }
 }

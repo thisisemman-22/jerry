@@ -69,11 +69,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               : LandingPageWidget(),
         ),
         FFRoute(
-          name: LoadingPageWidget.routeName,
-          path: LoadingPageWidget.routePath,
-          builder: (context, params) => LoadingPageWidget(),
-        ),
-        FFRoute(
           name: LandingPageWidget.routeName,
           path: LandingPageWidget.routePath,
           builder: (context, params) => LandingPageWidget(),
@@ -87,6 +82,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: ProcessedPageWidget.routeName,
           path: ProcessedPageWidget.routePath,
           builder: (context, params) => ProcessedPageWidget(),
+        ),
+        FFRoute(
+          name: AboutPageWidget.routeName,
+          path: AboutPageWidget.routePath,
+          builder: (context, params) => AboutPageWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
