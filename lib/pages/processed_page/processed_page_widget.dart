@@ -94,7 +94,7 @@ class _ProcessedPageWidgetState extends State<ProcessedPageWidget> {
                         FFAppState().receivedImage,
                         width: double.infinity,
                         height: double.infinity,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),

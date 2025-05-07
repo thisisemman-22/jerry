@@ -726,13 +726,21 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                       );
 
                                       _shouldSetState = true;
-                                      if ((_model.upscaleDone?.statusCode ??
-                                              200) ==
-                                          200) {
+                                      if ((_model.upscaleDone?.succeeded ??
+                                          true)) {
                                         FFAppState().processStart = false;
-                                        safeSetState(() {});
+                                        FFAppState().receivedImage =
+                                            getJsonField(
+                                          (_model.upscaleDone?.jsonBody ?? ''),
+                                          r'''$.output_url''',
+                                        ).toString();
+                                        FFAppState().imageURL = getJsonField(
+                                          (_model.upscaleDone?.jsonBody ?? ''),
+                                          r'''$.output_url''',
+                                        ).toString();
+                                        FFAppState().update(() {});
 
-                                        context.pushNamed(
+                                        context.goNamed(
                                             ProcessedPageWidget.routeName);
 
                                         if (_shouldSetState)
@@ -765,9 +773,9 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                           },
                                         );
                                         FFAppState().processStart = false;
-                                        safeSetState(() {});
+                                        FFAppState().update(() {});
 
-                                        context.pushNamed(
+                                        context.goNamed(
                                             LandingPageWidget.routeName);
                                       }
 
@@ -782,13 +790,23 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                         );
 
                                         _shouldSetState = true;
-                                        if ((_model.downscaleDone?.statusCode ??
-                                                200) ==
-                                            200) {
+                                        if ((_model.downscaleDone?.succeeded ??
+                                            true)) {
                                           FFAppState().processStart = false;
-                                          safeSetState(() {});
+                                          FFAppState().receivedImage =
+                                              getJsonField(
+                                            (_model.downscaleDone?.jsonBody ??
+                                                ''),
+                                            r'''$.output_url''',
+                                          ).toString();
+                                          FFAppState().imageURL = getJsonField(
+                                            (_model.downscaleDone?.jsonBody ??
+                                                ''),
+                                            r'''$.output_url''',
+                                          ).toString();
+                                          FFAppState().update(() {});
 
-                                          context.pushNamed(
+                                          context.goNamed(
                                               ProcessedPageWidget.routeName);
 
                                           if (_shouldSetState)
@@ -823,9 +841,9 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                             },
                                           );
                                           FFAppState().processStart = false;
-                                          safeSetState(() {});
+                                          FFAppState().update(() {});
 
-                                          context.pushNamed(
+                                          context.goNamed(
                                               LandingPageWidget.routeName);
                                         }
 
@@ -841,13 +859,24 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                           );
 
                                           _shouldSetState = true;
-                                          if ((_model.denoiseDone?.statusCode ??
-                                                  200) ==
-                                              200) {
+                                          if ((_model.denoiseDone?.succeeded ??
+                                              true)) {
                                             FFAppState().processStart = false;
-                                            safeSetState(() {});
+                                            FFAppState().receivedImage =
+                                                getJsonField(
+                                              (_model.denoiseDone?.jsonBody ??
+                                                  ''),
+                                              r'''$.output_url''',
+                                            ).toString();
+                                            FFAppState().imageURL =
+                                                getJsonField(
+                                              (_model.denoiseDone?.jsonBody ??
+                                                  ''),
+                                              r'''$.output_url''',
+                                            ).toString();
+                                            FFAppState().update(() {});
 
-                                            context.pushNamed(
+                                            context.goNamed(
                                                 ProcessedPageWidget.routeName);
 
                                             if (_shouldSetState)
@@ -882,9 +911,9 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                               },
                                             );
                                             FFAppState().processStart = false;
-                                            safeSetState(() {});
+                                            FFAppState().update(() {});
 
-                                            context.pushNamed(
+                                            context.goNamed(
                                                 LandingPageWidget.routeName);
                                           }
 
@@ -914,7 +943,7 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                                 },
                                               );
                                               FFAppState().processStart = false;
-                                              safeSetState(() {});
+                                              FFAppState().update(() {});
                                               if (_shouldSetState)
                                                 safeSetState(() {});
                                               return;
@@ -927,9 +956,8 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                             );
 
                                             _shouldSetState = true;
-                                            if ((_model.blurDone?.statusCode ??
-                                                    200) ==
-                                                200) {
+                                            if ((_model.blurDone?.succeeded ??
+                                                true)) {
                                               FFAppState().receivedImage =
                                                   getJsonField(
                                                 (_model.blurDone?.jsonBody ??
@@ -943,9 +971,9 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                                 r'''$.output_url''',
                                               ).toString();
                                               FFAppState().processStart = false;
-                                              safeSetState(() {});
+                                              FFAppState().update(() {});
 
-                                              context.pushNamed(
+                                              context.goNamed(
                                                   ProcessedPageWidget
                                                       .routeName);
 
@@ -981,9 +1009,9 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                                 },
                                               );
                                               FFAppState().processStart = false;
-                                              safeSetState(() {});
+                                              FFAppState().update(() {});
 
-                                              context.pushNamed(
+                                              context.goNamed(
                                                   LandingPageWidget.routeName);
                                             }
 
@@ -1010,9 +1038,9 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                               },
                                             );
                                             FFAppState().processStart = false;
-                                            safeSetState(() {});
+                                            FFAppState().update(() {});
 
-                                            context.pushNamed(
+                                            context.goNamed(
                                                 UploadImageWidget.routeName);
 
                                             if (_shouldSetState)

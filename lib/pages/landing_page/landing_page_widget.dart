@@ -223,22 +223,22 @@ class _LandingPageWidgetState extends State<LandingPageWidget>
                         child: Text(
                           'Welcome to J.E.R.R.Y.!',
                           style: FlutterFlowTheme.of(context)
-                              .displaySmall
+                              .headlineLarge
                               .override(
                                 font: GoogleFonts.fredoka(
                                   fontWeight: FlutterFlowTheme.of(context)
-                                      .displaySmall
+                                      .headlineLarge
                                       .fontWeight,
                                   fontStyle: FlutterFlowTheme.of(context)
-                                      .displaySmall
+                                      .headlineLarge
                                       .fontStyle,
                                 ),
                                 letterSpacing: 0.0,
                                 fontWeight: FlutterFlowTheme.of(context)
-                                    .displaySmall
+                                    .headlineLarge
                                     .fontWeight,
                                 fontStyle: FlutterFlowTheme.of(context)
-                                    .displaySmall
+                                    .headlineLarge
                                     .fontStyle,
                               ),
                         ).animateOnPageLoad(
