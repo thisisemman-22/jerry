@@ -13,6 +13,11 @@ def handle_bad_request(e):
 def handle_exception(e):
     return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
+# Add a handler for 503 Service Unavailable errors
+@app.errorhandler(503)
+def handle_service_unavailable(e):
+    return jsonify({"error": "Service Unavailable", "message": "The server is temporarily unable to handle the request. Please try again later."}), 503
+
 @app.route('/downscale', methods=['POST'])
 def downscale_route():
     if 'image' not in request.files:
