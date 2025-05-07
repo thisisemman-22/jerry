@@ -3,6 +3,7 @@ import numpy as np
 import math
 from io import BytesIO
 import uuid
+import os
 
 def process_image(image_file, process_type, **kwargs):
     """
@@ -14,7 +15,7 @@ def process_image(image_file, process_type, **kwargs):
         image = Image.open(image_file).convert('RGB') # Ensure image is RGB
 
     except Exception as e:
-        raise ValueError(f"Could not open or read image file: {e}")
+        raise ValueError("Could not open or read image file. Please try again.")
 
     if process_type == 'downscale':
         # Using Newton's Divided Difference Interpolation
@@ -32,12 +33,19 @@ def process_image(image_file, process_type, **kwargs):
     else:
         raise ValueError(f"Unsupported process type: {process_type}")
 
+    # Ensure the 'public' directory exists
+    os.makedirs('public', exist_ok=True)
+
     # Generate a unique filename to avoid overwriting existing files
     unique_id = uuid.uuid4().hex[:8]  # Generate an 8-character unique ID
     output_path = f"public/processed_{process_type}_{unique_id}.png"
 
     # Save the processed image to the public folder and return the file path
-    processed_image.save(output_path, format="PNG")
+    try:
+        processed_image.save(output_path, format="PNG")
+    except Exception as e:
+        raise ValueError("Failed to save the processed image. Please try again.")
+
     return output_path.replace("public/", "")  # Return relative path for URL generation
 
 # ---------------------------------------------------------
