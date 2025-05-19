@@ -47,10 +47,43 @@ def denoise_route():
     if 'image' not in request.files:
         return jsonify({"error": "No Image File", "message": "No image file provided."}), 400
     try:
+        import time
+        start_time = time.time()
+        
         image_file = request.files['image']
-        output_path = process_image(image_file, 'denoise')
+        
+        # Get optional parameters with defaults
+        edge_threshold = int(request.form.get('edge_threshold', 30))
+        iterations = int(request.form.get('iterations', 1))  # Default to just 1 iteration for Gaussian
+        
+        # Validate parameters
+        if edge_threshold < 1 or edge_threshold > 100:
+            return jsonify({"error": "Invalid Edge Threshold", 
+                           "message": "Edge threshold must be between 1 and 100. Higher values preserve more details."}), 400
+        if iterations < 1 or iterations > 3:  # Reduced max iterations since Gaussian is more powerful per iteration
+            return jsonify({"error": "Invalid Iterations", 
+                           "message": "Iterations must be between 1 and 3. More iterations increase smoothing."}), 400
+            
+        output_path = process_image(image_file, 'denoise', edge_threshold=edge_threshold, iterations=iterations)
         output_url = request.host_url + output_path  # Convert path to URL
-        return jsonify({"output_url": output_url})
+        
+        # Calculate total processing time
+        total_time = time.time() - start_time
+        
+        return jsonify({
+            "output_url": output_url,
+            "parameters": {
+                "edge_threshold": edge_threshold,
+                "iterations": iterations,
+                "method": "optimized_bilateral_gaussian"
+            },
+            "performance": {
+                "total_time_seconds": round(total_time, 2),
+                "image_processed_at": time.strftime("%Y-%m-%d %H:%M:%S")
+            }
+        })
+    except ValueError as e:
+        return jsonify({"error": "Invalid Parameters", "message": str(e)}), 400
     except Exception as e:
         return jsonify({"error": "Processing Failed", "message": str(e)}), 500
 
