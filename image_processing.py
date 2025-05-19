@@ -4,6 +4,7 @@ import math
 from io import BytesIO
 import uuid
 import os
+from numba import jit, prange
 
 def process_image(image_file, process_type, **kwargs):
     """
@@ -96,53 +97,115 @@ def downscale(image):
 # ---------------------------------------------------------
 # Upscaling Function (Newton's Divided Difference Interpolation)
 # ---------------------------------------------------------
+
+# JIT-compiled Newton's interpolation functions for massive speedup
+@jit(nopython=True)
+def newton_interp_1d_numba(x_data, y_data, x_interp):
+    """Fast 1D Newton interpolation for a single point with Numba acceleration"""
+    n = len(x_data)
+    
+    # First coefficient is just y0
+    dd = np.zeros(n, dtype=np.float64)
+    dd[0] = y_data[0]
+    
+    # Calculate divided differences
+    for i in range(1, n):
+        # Compute ith divided difference
+        term = y_data[i]
+        for j in range(i):
+            # Avoid division by zero
+            if x_data[i] == x_data[j]:
+                continue
+            term = (term - y_data[j]) / (x_data[i] - x_data[j])
+        dd[i] = term
+    
+    # Evaluate polynomial at x_interp
+    result = dd[0]
+    x_term = 1.0
+    
+    for i in range(1, n):
+        x_term *= (x_interp - x_data[i-1])
+        result += dd[i] * x_term
+        
+    return max(0.0, min(255.0, result))
+
+@jit(nopython=True, parallel=True)
+def process_row(img_row, width, new_width):
+    """Process a single row with horizontal interpolation using Numba"""
+    result = np.zeros((new_width, 3), dtype=np.uint8)
+    x_points = np.array([0.0, 1.0])  # Normalized coordinates
+    
+    for x_new in range(0, new_width, 2):
+        # Original pixels (even indices)
+        x_orig = x_new // 2
+        if x_orig < width:
+            result[x_new] = img_row[x_orig]
+        
+        # Interpolated pixels (odd indices)
+        if x_new + 1 < new_width:
+            if x_orig + 1 < width:
+                # For each color channel
+                for c in range(3):
+                    y_points = np.array([float(img_row[x_orig, c]), 
+                                        float(img_row[min(x_orig + 1, width - 1), c])])
+                    result[x_new + 1, c] = int(newton_interp_1d_numba(x_points, y_points, 0.5))
+            else:
+                # Edge case - use last known value
+                result[x_new + 1] = img_row[width - 1]
+    
+    return result
+
+@jit(nopython=True)
+def process_column(col_data, new_height):
+    """Process a single column with vertical interpolation using Numba"""
+    result = np.zeros((new_height, 3), dtype=np.uint8)
+    
+    # Copy existing pixels - first copy all original pixels to their correct positions
+    for y_orig in range(len(col_data)):
+        y_new = y_orig * 2  # Each original pixel maps to an even index in the new array
+        if y_new < new_height:
+            result[y_new] = col_data[y_orig]
+    
+    # Interpolate missing pixels (odd indices)
+    y_points = np.array([0.0, 1.0])  # Normalized coordinates
+    for y in range(1, new_height, 2):
+        y_prev = y - 1
+        y_next = min(y + 1, new_height - 1)
+        
+        # For each color channel
+        for c in range(3):
+            p_points = np.array([float(result[y_prev, c]), float(result[y_next, c])])
+            result[y, c] = int(newton_interp_1d_numba(y_points, p_points, 0.5))
+    
+    return result
+
 def upscale(image):
-    # Double the image size using Newton's Divided Difference Interpolation
+    """
+    Double the image size using Newton's Divided Difference Interpolation,
+    applied separately in horizontal and vertical dimensions with Numba acceleration
+    """
     width, height = image.size
     new_width, new_height = width * 2, height * 2
-
-    # Create a new blank image
-    new_image = Image.new('RGB', (new_width, new_height))
-    pixels = new_image.load()
-
-    def divided_differences(points):
-        n = len(points)
-        table = [[0] * n for _ in range(n)]
-        for i in range(n):
-            table[i][0] = points[i][1]
-        for j in range(1, n):
-            for i in range(n - j):
-                if points[i + j][0] == points[i][0]:
-                    table[i][j] = 0  # Avoid division by zero
-                else:
-                    table[i][j] = (table[i + 1][j - 1] - table[i][j - 1]) / (points[i + j][0] - points[i][0])
-        return table[0]
-
-    for i in range(new_width):
-        for j in range(new_height):
-            x = i / 2
-            y = j / 2
-
-            # Ensure indices are within bounds
-            x0 = max(0, min(int(x), width - 1))
-            y0 = max(0, min(int(y), height - 1))
-            x1 = max(0, min(x0 + 1, width - 1))
-            y1 = max(0, min(y0 + 1, height - 1))
-
-            # Use Newton's Divided Difference Interpolation for pixel values
-            neighbors = [
-                (x0, np.array(image.getpixel((x0, y0)))),
-                (x1, np.array(image.getpixel((x1, y0)))),
-                (y0, np.array(image.getpixel((x0, y1)))),
-                (y1, np.array(image.getpixel((x1, y1))))
-            ]
-
-            coeffs = divided_differences(neighbors)
-            interpolated_pixel = coeffs[0]  # Simplified for demonstration
-
-            pixels[i, j] = tuple(np.clip(interpolated_pixel, 0, 255).astype(int))
-
-    return new_image
+    
+    # Convert original image to numpy array for faster operations
+    img_array = np.array(image)
+    
+    # Step 1: Horizontal interpolation (rows)
+    intermediate = np.zeros((height, new_width, 3), dtype=np.uint8)
+    
+    # Process each row in parallel for better performance
+    for y in range(height):
+        intermediate[y] = process_row(img_array[y], width, new_width)
+    
+    # Step 2: Create final image with vertical interpolation
+    final_array = np.zeros((new_height, new_width, 3), dtype=np.uint8)
+    
+    # Process each column for vertical interpolation
+    for x in range(new_width):
+        final_array[:, x] = process_column(intermediate[:, x], new_height)
+    
+    # Convert back to PIL Image
+    return Image.fromarray(final_array)
 
 # ---------------------------------------------------------
 # Denoising Function (Gauss-Seidel Method)
