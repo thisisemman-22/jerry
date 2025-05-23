@@ -1,0 +1,6 @@
+# Removed math and io as they are built-in Python modules and do not need to be listed
+Flask
+Werkzeug
+Pillow
+numpy
+numba
