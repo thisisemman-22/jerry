@@ -264,7 +264,7 @@ class _AboutPageWidgetState extends State<AboutPageWidget>
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 20.0, 0.0, 0.0),
                             child: Text(
-                              'J.E.R.R.Y., or Joint Enhancement Rescaling Rendered Yields, is an app for powerful and intelligent image processing. Whether you\'re a student, developer, or enthusiast, Jerry gives you the tools to upscale, downscale, denoise, and blur images — all powered by foundational numerical methods like Newton’s Divided Difference, Trapezoidal Rule, and Gauss-Seidel Iteration.\n\nUnlike typical filter-based processors, Jerry applies mathematical precision to every pixel, giving you sharper, smoother, and more accurate results with full control over the enhancement process. Upload your image, select a method, and let Jerry do the math.',
+                              'J.E.R.R.Y., or Joint Enhancement Rescaling Rendered Yields, is an app for powerful and intelligent image processing. Whether you\'re a student, developer, or enthusiast, Jerry gives you the tools to upscale, downscale, denoise, and blur images — all powered by foundational numerical methods like Newton’s Divided Difference, Trapezoidal Rule, and Gaussian.\n\nUnlike typical filter-based processors, Jerry applies mathematical precision to every pixel, giving you sharper, smoother, and more accurate results with full control over the enhancement process. Upload your image, select a method, and let Jerry do the math.',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(

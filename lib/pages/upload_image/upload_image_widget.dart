@@ -1,6 +1,7 @@
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_choice_chips.dart';
+import '/flutter_flow/flutter_flow_count_controller.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -651,50 +652,94 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      Align(
-                                                        alignment:
-                                                            AlignmentDirectional(
-                                                                0.0, 0.0),
-                                                        child: SliderTheme(
-                                                          data: SliderThemeData(
-                                                            showValueIndicator:
-                                                                ShowValueIndicator
-                                                                    .always,
+                                                      Container(
+                                                        width: 120.0,
+                                                        height: 40.0,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .secondaryBackground,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                        ),
+                                                        child:
+                                                            FlutterFlowCountController(
+                                                          decrementIconBuilder:
+                                                              (enabled) => Icon(
+                                                            Icons
+                                                                .remove_rounded,
+                                                            color: enabled
+                                                                ? FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryText
+                                                                : FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .alternate,
+                                                            size: 24.0,
                                                           ),
-                                                          child: Container(
-                                                            width: 300.0,
-                                                            child: Slider(
-                                                              activeColor:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .primary,
-                                                              inactiveColor:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .alternate,
-                                                              min: 0.0,
-                                                              max: 100.0,
-                                                              value: _model
-                                                                      .sliderValue ??=
-                                                                  1.0,
-                                                              label: _model
-                                                                  .sliderValue
-                                                                  ?.toStringAsFixed(
-                                                                      0),
-                                                              onChanged: (_model
-                                                                          .choiceChipsValue !=
-                                                                      'Blur')
-                                                                  ? null
-                                                                  : (newValue) {
-                                                                      newValue =
-                                                                          double.parse(
-                                                                              newValue.toStringAsFixed(0));
-                                                                      safeSetState(() =>
-                                                                          _model.sliderValue =
-                                                                              newValue);
-                                                                    },
-                                                            ),
+                                                          incrementIconBuilder:
+                                                              (enabled) => Icon(
+                                                            Icons.add_rounded,
+                                                            color: enabled
+                                                                ? FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .primary
+                                                                : FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .alternate,
+                                                            size: 24.0,
                                                           ),
+                                                          countBuilder:
+                                                              (count) => Text(
+                                                            count.toString(),
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .titleLarge
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .fredoka(
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleLarge
+                                                                      .fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleLarge
+                                                                      .fontStyle,
+                                                                ),
+                                                          ),
+                                                          count: _model
+                                                              .countControllerValue ??= 5,
+                                                          updateCount: (count) =>
+                                                              safeSetState(() =>
+                                                                  _model.countControllerValue =
+                                                                      count),
+                                                          stepSize: 5,
+                                                          minimum: 5,
+                                                          maximum: 100,
+                                                          contentPadding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      12.0,
+                                                                      0.0,
+                                                                      12.0,
+                                                                      0.0),
                                                         ),
                                                       ),
                                                     ],
@@ -923,7 +968,8 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                         } else {
                                           if (FFAppState().choiceChip ==
                                               'Blur') {
-                                            if (_model.sliderValue == 0.0) {
+                                            if (_model.countControllerValue ==
+                                                0) {
                                               await showDialog(
                                                 context: context,
                                                 builder: (alertDialogContext) {
@@ -947,77 +993,84 @@ class _UploadImageWidgetState extends State<UploadImageWidget>
                                               if (_shouldSetState)
                                                 safeSetState(() {});
                                               return;
-                                            }
-                                            _model.blurDone =
-                                                await BlurCall.call(
-                                              imagePath:
-                                                  _model.uploadedLocalFile,
-                                              radius: _model.sliderValue,
-                                            );
+                                            } else {
+                                              _model.blurDone =
+                                                  await BlurCall.call(
+                                                imagePath:
+                                                    _model.uploadedLocalFile,
+                                                radius:
+                                                    _model.countControllerValue,
+                                              );
 
-                                            _shouldSetState = true;
-                                            if ((_model.blurDone?.succeeded ??
-                                                true)) {
-                                              FFAppState().receivedImage =
-                                                  getJsonField(
-                                                (_model.blurDone?.jsonBody ??
-                                                    ''),
-                                                r'''$.output_url''',
-                                              ).toString();
-                                              FFAppState().imageURL =
-                                                  getJsonField(
-                                                (_model.blurDone?.jsonBody ??
-                                                    ''),
-                                                r'''$.output_url''',
-                                              ).toString();
-                                              FFAppState().processStart = false;
-                                              FFAppState().update(() {});
+                                              _shouldSetState = true;
+                                              if ((_model.blurDone?.succeeded ??
+                                                  true)) {
+                                                FFAppState().receivedImage =
+                                                    getJsonField(
+                                                  (_model.blurDone?.jsonBody ??
+                                                      ''),
+                                                  r'''$.output_url''',
+                                                ).toString();
+                                                FFAppState().imageURL =
+                                                    getJsonField(
+                                                  (_model.blurDone?.jsonBody ??
+                                                      ''),
+                                                  r'''$.output_url''',
+                                                ).toString();
+                                                FFAppState().processStart =
+                                                    false;
+                                                FFAppState().update(() {});
 
-                                              context.goNamed(
-                                                  ProcessedPageWidget
-                                                      .routeName);
+                                                context.goNamed(
+                                                    ProcessedPageWidget
+                                                        .routeName);
+
+                                                if (_shouldSetState)
+                                                  safeSetState(() {});
+                                                return;
+                                              } else {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (alertDialogContext) {
+                                                    return AlertDialog(
+                                                      title: Text(getJsonField(
+                                                        (_model.blurDone
+                                                                ?.jsonBody ??
+                                                            ''),
+                                                        r'''$.error''',
+                                                      ).toString()),
+                                                      content:
+                                                          Text(getJsonField(
+                                                        (_model.blurDone
+                                                                ?.jsonBody ??
+                                                            ''),
+                                                        r'''$.message''',
+                                                      ).toString()),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  alertDialogContext),
+                                                          child: Text('Ok'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                                FFAppState().processStart =
+                                                    false;
+                                                FFAppState().update(() {});
+
+                                                context.goNamed(
+                                                    LandingPageWidget
+                                                        .routeName);
+                                              }
 
                                               if (_shouldSetState)
                                                 safeSetState(() {});
                                               return;
-                                            } else {
-                                              await showDialog(
-                                                context: context,
-                                                builder: (alertDialogContext) {
-                                                  return AlertDialog(
-                                                    title: Text(getJsonField(
-                                                      (_model.blurDone
-                                                              ?.jsonBody ??
-                                                          ''),
-                                                      r'''$.error''',
-                                                    ).toString()),
-                                                    content: Text(getJsonField(
-                                                      (_model.blurDone
-                                                              ?.jsonBody ??
-                                                          ''),
-                                                      r'''$.message''',
-                                                    ).toString()),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                alertDialogContext),
-                                                        child: Text('Ok'),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                              FFAppState().processStart = false;
-                                              FFAppState().update(() {});
-
-                                              context.goNamed(
-                                                  LandingPageWidget.routeName);
                                             }
-
-                                            if (_shouldSetState)
-                                              safeSetState(() {});
-                                            return;
                                           } else {
                                             await showDialog(
                                               context: context,

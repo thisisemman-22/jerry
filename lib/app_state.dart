@@ -67,4 +67,10 @@ class FFAppState extends ChangeNotifier {
   set APIDone(bool value) {
     _APIDone = value;
   }
+
+  String _downloadImage = '';
+  String get downloadImage => _downloadImage;
+  set downloadImage(String value) {
+    _downloadImage = value;
+  }
 }

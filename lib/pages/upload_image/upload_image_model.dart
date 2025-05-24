@@ -19,8 +19,8 @@ class UploadImageModel extends FlutterFlowModel<UploadImageWidget> {
       choiceChipsValueController?.value?.firstOrNull;
   set choiceChipsValue(String? val) =>
       choiceChipsValueController?.value = val != null ? [val] : [];
-  // State field(s) for Slider widget.
-  double? sliderValue;
+  // State field(s) for CountController widget.
+  int? countControllerValue;
   // Stores action output result for [Backend Call - API (Upscale)] action in Button widget.
   ApiCallResponse? upscaleDone;
   // Stores action output result for [Backend Call - API (Downscale)] action in Button widget.

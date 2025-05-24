@@ -36,7 +36,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       errorBuilder: (context, state) => appStateNotifier.showSplashImage
           ? Builder(
               builder: (context) => Container(
-                color: Colors.transparent,
+                color: Color(0xFFFCFCFC),
                 child: Center(
                   child: Image.asset(
                     'assets/images/Upload_Image.gif',
@@ -55,7 +55,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, _) => appStateNotifier.showSplashImage
               ? Builder(
                   builder: (context) => Container(
-                    color: Colors.transparent,
+                    color: Color(0xFFFCFCFC),
                     child: Center(
                       child: Image.asset(
                         'assets/images/Upload_Image.gif',

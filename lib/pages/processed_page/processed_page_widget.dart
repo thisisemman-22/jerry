@@ -107,7 +107,7 @@ class _ProcessedPageWidgetState extends State<ProcessedPageWidget> {
                     child: FFButtonWidget(
                       onPressed: () async {
                         await downloadFile(
-                          filename: 'JERRY_Processed',
+                          filename: 'processedByJERRY',
                           url: FFAppState().imageURL,
                         );
                       },

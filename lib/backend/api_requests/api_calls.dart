@@ -80,7 +80,7 @@ class UpscaleCall {
 class BlurCall {
   static Future<ApiCallResponse> call({
     FFUploadedFile? imagePath,
-    double? radius,
+    int? radius,
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'Blur',
